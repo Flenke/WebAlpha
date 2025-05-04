@@ -1,0 +1,103 @@
+﻿@model WebAlpha.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-icon bg-purple">
+            <i class="bi bi-person"></i>
+        </div>
+        <h5 class="form-title">User Profile</h5>
+    </div>
+
+    <form asp-action="UpdateProfile" method="post" id="profileForm">
+        <div class="form-body">
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    @if (!string.IsNullOrEmpty(Model.ProfileImageUrl))
+                    {
+                        <img src="@Model.ProfileImageUrl" alt="Profile Image" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div style="width: 120px; height: 120px; background-color: #F0F5FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="bi bi-person" style="font-size: 60px; color: #3391FF;"></i>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="profileImageUrl" class="form-label">Profile Image URL</label>
+                    <input type="text" id="profileImageUrl" name="profileImageUrl" class="form-control" value="@Model.ProfileImageUrl" placeholder="Enter image URL" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" id="firstName" name="firstName" class="form-control" value="@Model.FirstName" required placeholder="Enter your first name" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" class="form-control" value="@Model.LastName" required placeholder="Enter your last name" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" value="@Model.Email" disabled />
+                <small class="text-muted">To change your email, please go to the account settings.</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" value="@Model.UserName" disabled />
+                <small class="text-muted">To change your username, please go to the account settings.</small>
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#profileForm").validate({
+                rules: {
+                    firstName: {
+                        required: true,
+                        maxlength: 50
+                    },
+                    lastName: {
+                        required: true,
+                        maxlength: 50
+                    },
+                    profileImageUrl: {
+                        url: true
+                    }
+                },
+                errorElement: "div",
+                errorClass: "field-validation-error"
+            });
+
+            // Preview profile image
+            $("#profileImageUrl").on("change", function() {
+                var imgUrl = $(this).val();
+                if (imgUrl) {
+                    $(this).closest(".text-center").find(".rounded-circle, div[style*='border-radius: 50%']").replaceWith('<img src="' + imgUrl + '" alt="Profile Image" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;" />');
+                } else {
+                    $(this).closest(".text-center").find(".rounded-circle, div[style*='border-radius: 50%']").replaceWith('<div style="width: 120px; height: 120px; background-color: #F0F5FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;"><i class="bi bi-person" style="font-size: 60px; color: #3391FF;"></i></div>');
+                }
+            });
+        });
+    </script>
+}

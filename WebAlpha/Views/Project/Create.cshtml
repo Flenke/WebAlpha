@@ -1,0 +1,109 @@
+﻿@model WebAlpha.Models.ViewModels.ProjectCreateViewModel
+@{
+    ViewData["Title"] = "Add Project";
+}
+
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-icon bg-blue">
+            <i class="bi bi-plus-lg"></i>
+        </div>
+        <h5 class="form-title">Add Project</h5>
+    </div>
+
+    <form asp-action="Create" method="post" id="createProjectForm">
+        <div class="form-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">Project Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter project name" />
+                <span asp-validation-for="Name" class="auth-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ClientName" class="form-label">Client Name</label>
+                <input asp-for="ClientName" class="form-control" placeholder="Enter client name" />
+                <span asp-validation-for="ClientName" class="auth-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter project description"></textarea>
+                <span asp-validation-for="Description" class="auth-validation-error"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                        <span asp-validation-for="StartDate" class="auth-validation-error"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input asp-for="EndDate" class="form-control" type="date" />
+                        <span asp-validation-for="EndDate" class="auth-validation-error"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Budget" class="form-label">Budget</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="Budget" class="form-control" type="number" min="0" step="0.01" placeholder="Enter budget amount" />
+                </div>
+                <span asp-validation-for="Budget" class="auth-validation-error"></span>
+            </div>
+
+            <div class="form-group mb-0">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<WebAlpha.Models.ProjectStatus>()">
+                </select>
+                <span asp-validation-for="Status" class="auth-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="btn btn-primary w-100">Create Project</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#createProjectForm").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        maxlength: 100
+                    },
+                    Description: {
+                        required: true,
+                        maxlength: 500
+                    },
+                    ClientName: {
+                        required: true
+                    },
+                    Budget: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    StartDate: {
+                        required: true,
+                        date: true
+                    }
+                },
+                errorElement: "div",
+                errorClass: "auth-validation-error"
+            });
+        });
+    </script>
+}

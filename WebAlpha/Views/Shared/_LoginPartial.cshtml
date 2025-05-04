@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebAlpha.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="d-flex align-items-center">
+        <div class="dropdown">
+            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @if (!string.IsNullOrEmpty(UserManager.GetUserAsync(User).Result?.ProfileImageUrl))
+                {
+                    <img src="@UserManager.GetUserAsync(User).Result?.ProfileImageUrl" alt="Profile" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background-color: #F0F5FF;">
+                        <i class="bi bi-person" style="color: #3391FF;"></i>
+                    </div>
+                }
+                <span class="me-1" style="color: #252733; font-weight: 600;">@UserManager.GetUserAsync(User).Result?.FirstName @UserManager.GetUserAsync(User).Result?.LastName</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index"><i class="bi bi-person me-2"></i>Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <a class="btn btn-outline-primary me-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </div>
+}

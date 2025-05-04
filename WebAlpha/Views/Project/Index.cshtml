@@ -1,0 +1,85 @@
+﻿@model IEnumerable<WebAlpha.Models.ViewModels.ProjectViewModel>
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="project-page">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="tab-navigation">
+            <a asp-action="Index" class="tab-item @(ViewBag.CurrentFilter == "All" ? "active" : "")">ALL</a>
+            <a asp-action="Index" asp-route-status="InProgress" class="tab-item @(ViewBag.CurrentFilter == "InProgress" ? "active" : "")">ONGOING</a>
+            <a asp-action="Index" asp-route-status="Completed" class="tab-item @(ViewBag.CurrentFilter == "Completed" ? "active" : "")">COMPLETED</a>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Add Project
+        </a>
+    </div>
+
+    <div class="projects-grid">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var project in Model)
+            {
+                var iconClass = "bg-blue";
+                var firstLetter = project.Name.Substring(0, 1).ToUpper();
+
+                @if (project.Status == WebAlpha.Models.ProjectStatus.InProgress)
+                {
+                    iconClass = "bg-green";
+                }
+                else if (project.Status == WebAlpha.Models.ProjectStatus.Completed)
+                {
+                    iconClass = "bg-orange";
+                }
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon @iconClass">
+                            @firstLetter
+                        </div>
+                        <h3 class="project-title">@project.Name</h3>
+                        @{
+                            string statusClass = project.Status switch
+                            {
+                                WebAlpha.Models.ProjectStatus.NotStarted => "status-not-started",
+                                WebAlpha.Models.ProjectStatus.InProgress => "status-in-progress",
+                                WebAlpha.Models.ProjectStatus.Completed => "status-completed",
+                                _ => "status-not-started"
+                            };
+                        }
+                        <span class="project-badge @statusClass">
+                            @project.StatusText
+                        </span>
+                    </div>
+                    <div class="project-content">
+                        <p class="project-description">
+                            @(project.Description.Length > 120
+                                ? project.Description.Substring(0, 120) + "..."
+                                : project.Description)
+                        </p>
+                        <div class="project-client">
+                            <small>Client: <strong>@project.ClientName</strong></small>
+                        </div>
+                    </div>
+                    <div class="project-footer">
+                        <div class="project-budget">$@project.Budget.ToString("N0")</div>
+                        <div class="project-actions">
+                            <a asp-action="Details" asp-route-id="@project.Id" class="action-button" title="View Details">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@project.Id" class="action-button" title="Edit Project">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info w-100">
+                No projects found. Click the "Add Project" button to create your first project.
+            </div>
+        }
+    </div>
+</div>

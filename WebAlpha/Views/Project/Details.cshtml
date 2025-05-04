@@ -1,0 +1,80 @@
+﻿@model WebAlpha.Models.ViewModels.ProjectViewModel
+@{
+    ViewData["Title"] = "Project Details";
+    var firstLetter = Model.Name.Substring(0, 1).ToUpper();
+
+    var iconClass = "bg-blue";
+    if (Model.Status == WebAlpha.Models.ProjectStatus.InProgress)
+    {
+        iconClass = "bg-green";
+    }
+    else if (Model.Status == WebAlpha.Models.ProjectStatus.Completed)
+    {
+        iconClass = "bg-orange";
+    }
+
+    string statusClass = Model.Status switch
+    {
+        WebAlpha.Models.ProjectStatus.NotStarted => "status-not-started",
+        WebAlpha.Models.ProjectStatus.InProgress => "status-in-progress",
+        WebAlpha.Models.ProjectStatus.Completed => "status-completed",
+        _ => "status-not-started"
+    };
+}
+
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-icon @iconClass">
+            <span>@firstLetter</span>
+        </div>
+        <h5 class="form-title">@Model.Name</h5>
+        <span class="project-badge @statusClass ml-auto">
+            @Model.StatusText
+        </span>
+    </div>
+
+    <div class="form-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6 class="text-muted mb-2">Project Details</h6>
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 100px;">Client:</th>
+                        <td>@Model.ClientName</td>
+                    </tr>
+                    <tr>
+                        <th>Budget:</th>
+                        <td>$@Model.Budget.ToString("N0")</td>
+                    </tr>
+                    <tr>
+                        <th>Start Date:</th>
+                        <td>@Model.StartDate.ToShortDateString()</td>
+                    </tr>
+                    <tr>
+                        <th>End Date:</th>
+                        <td>@(Model.EndDate.HasValue ? Model.EndDate.Value.ToShortDateString() : "-")</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted mb-2">Description</h6>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-footer">
+        <div class="row">
+            <div class="col-md-6 mb-2 mb-md-0">
+                <a asp-controller="Project" asp-action="Index" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Back to Projects
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a asp-controller="Project" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary w-100">
+                    <i class="bi bi-pencil"></i> Edit Project
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
